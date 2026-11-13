@@ -1,6 +1,7 @@
 import cors from 'cors';
 import express, { type Express } from 'express';
 import { env } from './env.js';
+import { errorHandler, notFoundHandler } from './errors.js';
 
 /** Monta a aplicação sem abrir porta, para que os testes possam usá-la. */
 export function createApp(): Express {
@@ -12,6 +13,11 @@ export function createApp(): Express {
   app.get('/health', (_req, res) => {
     res.json({ status: 'ok' });
   });
+
+  // Sempre por último: o que não casou com nenhuma rota vira 404,
+  // e todo erro passa pelo mesmo formato de resposta.
+  app.use(notFoundHandler);
+  app.use(errorHandler);
 
   return app;
 }
