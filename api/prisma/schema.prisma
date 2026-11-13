@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  STUDENT
+  INSTRUCTOR
+  ADMIN
+}
+
+model User {
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  passwordHash  String
+  role          Role      @default(STUDENT)
+  plan          Plan?     @relation(fields: [planId], references: [id])
+  planId        String?
+  planExpiresAt DateTime?
+  createdAt     DateTime  @default(now())
+
+  // Aulas que este usuário ministra (só faz sentido para instrutores)
+  classes ClassTemplate[]
+}
+
+model Plan {
+  id             String @id @default(uuid())
+  name           String @unique
+  priceCents     Int
+  durationMonths Int
+  description    String
+
+  users User[]
+}
+
+model Modality {
+  id          String @id @default(uuid())
+  name        String @unique
+  description String
+
+  classes ClassTemplate[]
+}
+
+/// Uma aula recorrente da grade semanal (ex.: Spinning, toda segunda às 19h).
+model ClassTemplate {
+  id              String   @id @default(uuid())
+  modality        Modality @relation(fields: [modalityId], references: [id])
+  modalityId      String
+  instructor      User     @relation(fields: [instructorId], references: [id])
+  instructorId    String
+  /// 0 = domingo ... 6 = sábado
+  weekday         Int
+  /// Horário de início no formato "HH:MM"
+  startTime       String
+  durationMinutes Int
+  capacity        Int
+
+  @@unique([modalityId, weekday, startTime])
+}
