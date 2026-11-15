@@ -1,0 +1,26 @@
+# Configuração da API no Render (https://render.com).
+# No painel: New > Blueprint > escolha este repositório.
+services:
+  - type: web
+    name: levelup-api
+    runtime: node
+    plan: free
+    # Instala tudo (inclusive ferramentas de build), compila a API,
+    # aplica as migrações no banco e carrega os dados de exemplo.
+    buildCommand: npm ci --include=dev && npm run build -w api && npm run db:deploy -w api
+    startCommand: npm run start -w api
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      # Endereço do banco no Neon. Preencha no painel do Render.
+      - key: DATABASE_URL
+        sync: false
+      # Endereço do site na Vercel (ex.: https://levelup.vercel.app), sem barra no final.
+      - key: CORS_ORIGIN
+        sync: false
+      # O Render gera valores aleatórios para estes dois.
+      - key: JWT_SECRET
+        generateValue: true
+      - key: SEED_DEMO_PASSWORD
+        generateValue: true
