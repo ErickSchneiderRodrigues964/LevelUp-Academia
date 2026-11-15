@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { validate } from '../validate.js';
-import { login, signup } from './auth.service.js';
+import { requireAuth } from './auth.middleware.js';
+import { login, loginDemo, signup, toPublicUser } from './auth.service.js';
 
 // Normaliza antes de validar: " Ana@Mail.com " e "ana@mail.com" são o mesmo e-mail.
 const email = z
@@ -26,6 +27,10 @@ const loginSchema = z.object({
   password: z.string('Informe a senha.').min(1, 'Informe a senha.'),
 });
 
+const demoSchema = z.object({
+  role: z.enum(['STUDENT', 'INSTRUCTOR', 'ADMIN'], 'Perfil de demonstração inválido.'),
+});
+
 export const authRoutes = Router();
 
 authRoutes.post('/signup', validate(signupSchema), async (req, res) => {
@@ -34,4 +39,14 @@ authRoutes.post('/signup', validate(signupSchema), async (req, res) => {
 
 authRoutes.post('/login', validate(loginSchema), async (req, res) => {
   res.json(await login(req.body));
+});
+
+// Entra como um dos usuários de demonstração, sem senha. Existe para quem
+// avalia o projeto conseguir ver cada perfil com um clique.
+authRoutes.post('/demo', validate(demoSchema), async (req, res) => {
+  res.json(await loginDemo(req.body.role));
+});
+
+authRoutes.get('/me', requireAuth, (req, res) => {
+  res.json(toPublicUser(req.user!));
 });

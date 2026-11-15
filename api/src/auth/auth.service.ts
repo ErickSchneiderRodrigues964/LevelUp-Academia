@@ -83,6 +83,32 @@ export async function signup(input: SignupInput): Promise<AuthResult> {
   }
 }
 
+/** E-mails dos usuários de demonstração criados pelo seed, um por perfil. */
+export const DEMO_EMAILS: Record<Role, string> = {
+  STUDENT: 'aluno@demo.com',
+  INSTRUCTOR: 'instrutor@demo.com',
+  ADMIN: 'admin@demo.com',
+};
+
+export async function loginDemo(role: Role): Promise<AuthResult> {
+  const user = await prisma.user.findUnique({
+    where: { email: DEMO_EMAILS[role] },
+    include: { plan: true },
+  });
+
+  // Confere o perfil também: se alguém alterar a conta de demonstração,
+  // este atalho não pode virar uma porta para um perfil diferente do pedido.
+  if (!user || user.role !== role) {
+    throw new AppError(
+      503,
+      'DEMO_UNAVAILABLE',
+      'Os usuários de demonstração não estão disponíveis no momento.',
+    );
+  }
+
+  return { token: signToken(user), user: toPublicUser(user) };
+}
+
 // Hash de uma senha qualquer, usado só para gastar o mesmo tempo quando o
 // e-mail não existe. Sem isso, a resposta mais rápida revelaria quais
 // e-mails estão cadastrados.

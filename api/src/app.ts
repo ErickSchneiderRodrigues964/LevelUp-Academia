@@ -1,6 +1,8 @@
 import cors from 'cors';
 import express, { type Express } from 'express';
+import { adminRoutes } from './admin/admin.routes.js';
 import { authRoutes } from './auth/auth.routes.js';
+import { catalogRoutes } from './catalog/catalog.routes.js';
 import { env } from './env.js';
 import { errorHandler, notFoundHandler } from './errors.js';
 
@@ -16,6 +18,8 @@ export function createApp(): Express {
   });
 
   app.use('/auth', authRoutes);
+  app.use('/admin', adminRoutes);
+  app.use(catalogRoutes);
 
   // Sempre por último: o que não casou com nenhuma rota vira 404,
   // e todo erro passa pelo mesmo formato de resposta.
