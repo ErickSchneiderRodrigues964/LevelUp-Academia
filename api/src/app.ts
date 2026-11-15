@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express, { type Express } from 'express';
+import { authRoutes } from './auth/auth.routes.js';
 import { env } from './env.js';
 import { errorHandler, notFoundHandler } from './errors.js';
 
@@ -13,6 +14,8 @@ export function createApp(): Express {
   app.get('/health', (_req, res) => {
     res.json({ status: 'ok' });
   });
+
+  app.use('/auth', authRoutes);
 
   // Sempre por último: o que não casou com nenhuma rota vira 404,
   // e todo erro passa pelo mesmo formato de resposta.
