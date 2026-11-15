@@ -5,7 +5,8 @@ import { Link, type LinkProps } from 'react-router';
 
 const base =
   'inline-flex min-h-11 items-center justify-center rounded-full px-6 py-3 text-base font-bold ' +
-  'transition-colors disabled:cursor-not-allowed disabled:opacity-60';
+  'transition duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.97] ' +
+  'motion-reduce:transform-none disabled:cursor-not-allowed disabled:opacity-60';
 const variants = {
   primary: 'bg-primary text-on-primary hover:bg-text',
   outline: 'border-[1.5px] border-border-strong font-semibold text-text hover:border-text',

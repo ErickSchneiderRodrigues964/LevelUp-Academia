@@ -40,6 +40,98 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ---------- Animações ---------- */
+
+/* Clicar num item do menu rola a página em vez de pular. */
+html {
+  scroll-behavior: smooth;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Elemento que surge ao entrar na tela (ver components/Reveal.tsx). */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Linhas do título principal: entram uma depois da outra ao abrir o site. */
+.hero-line {
+  animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 130ms);
+}
+
+/* Entrada de cada página ao trocar de rota. */
+.page-enter {
+  animation: rise 0.4s ease-out both;
+}
+
+/* Faixa que corre em loop: o conteúdo aparece duas vezes e desliza metade da largura. */
+.marquee-track {
+  display: inline-flex;
+  animation: marquee 30s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* Cartão que sobe um pouco e acende a borda ao passar o mouse. */
+.card-hover {
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    background-color 0.25s ease;
+}
+/* Só em aparelhos com mouse: em tela de toque o efeito ficaria "preso" depois do toque. */
+@media (hover: hover) {
+  .card-hover:hover {
+    transform: translateY(-6px);
+  }
+}
+
+/* Quem pediu "reduzir movimento" no sistema vê tudo parado e já visível. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .hero-line,
+  .page-enter,
+  .marquee-track {
+    animation: none;
+  }
+  .card-hover:hover {
+    transform: none;
+  }
+}
+
 /* Contorno de foco visível para quem navega pelo teclado */
 :focus-visible {
   outline: 2px solid var(--color-primary);

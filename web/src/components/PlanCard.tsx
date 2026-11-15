@@ -6,8 +6,8 @@ import { formatPrice } from '../format';
 export function PlanCard({ plan, featured = false }: { plan: Plan; featured?: boolean }) {
   return (
     <article
-      className={`flex flex-col gap-5 rounded-3xl p-8 ${
-        featured ? 'bg-primary text-on-primary' : 'border-[1.5px] border-border'
+      className={`card-hover flex h-full flex-col gap-5 rounded-3xl p-8 ${
+        featured ? 'bg-primary text-on-primary' : 'border-[1.5px] border-border hover:border-primary'
       }`}
     >
       <div className="flex items-center justify-between gap-3">
@@ -36,7 +36,7 @@ export function PlanCard({ plan, featured = false }: { plan: Plan; featured?: bo
 
       <Link
         to={`/cadastro?plano=${plan.id}`}
-        className={`mt-auto rounded-full px-4 py-4 text-center font-bold ${
+        className={`mt-auto rounded-full px-4 py-4 text-center font-bold transition duration-200 active:scale-[0.97] ${
           featured
             ? 'bg-bg text-text hover:bg-surface'
             : 'border-[1.5px] border-border-strong hover:border-text'

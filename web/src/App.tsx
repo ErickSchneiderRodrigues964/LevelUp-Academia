@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
 import { AuthProvider } from './auth/AuthContext';
 import { RequireRole } from './auth/RequireRole';
+import { PageTransition } from './components/PageTransition';
 import { WakingNotice } from './components/WakingNotice';
 import { AdminHome } from './pages/AdminHome';
 import { Home } from './pages/Home';
@@ -13,6 +14,7 @@ export function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <PageTransition>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -44,6 +46,7 @@ export function App() {
           {/* Endereço desconhecido volta para a página inicial. */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </PageTransition>
       </BrowserRouter>
       <WakingNotice />
     </AuthProvider>

@@ -1,23 +1,66 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { homeFor, useAuth } from '../auth/AuthContext';
 import { firstName } from '../format';
 import { Logo } from './Logo';
 import { ButtonLink } from './ui';
+import { useActiveSection } from './useActiveSection';
 
-/** Cabeçalho da página pública. */
+const SECTIONS = [
+  { id: 'modalidades', label: 'Modalidades' },
+  { id: 'planos', label: 'Planos' },
+  { id: 'aulas', label: 'Aulas' },
+  { id: 'app', label: 'App' },
+] as const;
+const SECTION_IDS = SECTIONS.map((section) => section.id);
+
+/** Cabeçalho da página pública: fica preso no topo e destaca a seção atual. */
 export function PublicHeader() {
   const { user } = useAuth();
+  const active = useActiveSection(SECTION_IDS);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Depois de rolar um pouco, o cabeçalho ganha fundo translúcido e uma linha.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 16);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   return (
-    <header className="mx-auto flex max-w-[1320px] flex-wrap items-center justify-between gap-4 px-5 py-6 sm:px-8">
+    <header
+      className={`sticky top-0 z-40 border-b transition-colors duration-300 ${
+        scrolled ? 'border-border bg-bg/85 backdrop-blur-md' : 'border-transparent'
+      }`}
+    >
+      <div className="mx-auto flex max-w-[1320px] flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-8">
       <Link to="/" aria-label="Level Up, página inicial">
         <Logo size={30} />
       </Link>
-      <nav aria-label="Seções" className="hidden gap-7 text-[15px] font-medium text-muted md:flex">
-        <a href="#modalidades" className="hover:text-text">Modalidades</a>
-        <a href="#planos" className="hover:text-text">Planos</a>
-        <a href="#aulas" className="hover:text-text">Aulas</a>
-        <a href="#app" className="hover:text-text">App</a>
+      <nav aria-label="Seções" className="hidden gap-7 text-[15px] font-medium md:flex">
+        {SECTIONS.map(({ id, label }) => {
+          const isActive = active === id;
+          return (
+            <a
+              key={id}
+              href={`#${id}`}
+              aria-current={isActive ? 'true' : undefined}
+              className={`relative py-2 transition-colors duration-200 hover:text-text ${
+                isActive ? 'text-primary' : 'text-muted'
+              }`}
+            >
+              {label}
+              {/* Traço que cresce sob o item da seção em que a pessoa está. */}
+              <span
+                aria-hidden="true"
+                className={`absolute inset-x-0 bottom-0 h-0.5 origin-left bg-primary transition-transform duration-300 ${
+                  isActive ? 'scale-x-100' : 'scale-x-0'
+                }`}
+              />
+            </a>
+          );
+        })}
       </nav>
       <div className="flex items-center gap-3">
         {user ? (
@@ -30,6 +73,7 @@ export function PublicHeader() {
             <ButtonLink to="/cadastro">Criar conta</ButtonLink>
           </>
         )}
+      </div>
       </div>
     </header>
   );
