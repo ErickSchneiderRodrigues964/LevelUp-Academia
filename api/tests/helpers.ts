@@ -6,6 +6,9 @@ export const TEST_PASSWORD = 'senha-de-teste-123';
 
 /** Apaga todos os dados, respeitando a ordem das chaves estrangeiras. */
 export async function resetDb(): Promise<void> {
+  await prisma.workoutItem.deleteMany();
+  await prisma.workout.deleteMany();
+  await prisma.exercise.deleteMany();
   await prisma.classTemplate.deleteMany();
   await prisma.user.deleteMany();
   await prisma.plan.deleteMany();
