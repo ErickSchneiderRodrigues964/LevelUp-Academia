@@ -49,6 +49,8 @@ export type Exercise = {
   steps: string[];
   /** Duas fotos: posição inicial e final. */
   images: string[];
+  /** Vídeo opcional; se existir, é mostrado no lugar da animação das fotos. */
+  videoUrl: string | null;
 };
 
 export type WorkoutItem = {

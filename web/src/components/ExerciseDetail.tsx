@@ -126,7 +126,20 @@ export function ExerciseDetail({
 
         <div className="grid gap-6 md:grid-cols-2">
           <div className="flex flex-col gap-4">
-            <ExerciseAnimation images={exercise.images} alt={exercise.name} />
+            {exercise.videoUrl ? (
+              <video
+                src={exercise.videoUrl}
+                poster={exercise.images[0]}
+                controls
+                loop
+                muted
+                playsInline
+                aria-label={`Vídeo: ${exercise.name}`}
+                className="aspect-[4/3] w-full rounded-2xl bg-black object-contain"
+              />
+            ) : (
+              <ExerciseAnimation images={exercise.images} alt={exercise.name} controls />
+            )}
             <dl className="grid grid-cols-3 gap-2 text-sm">
               {(
                 [

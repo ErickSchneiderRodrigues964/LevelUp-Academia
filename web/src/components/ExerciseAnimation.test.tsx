@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ExerciseAnimation } from './ExerciseAnimation';
 
@@ -28,15 +28,35 @@ describe('ExerciseAnimation', () => {
     expect(second.style.opacity).toBe('0');
 
     act(() => {
-      vi.advanceTimersByTime(900);
+      vi.advanceTimersByTime(1800);
     });
     expect(first.style.opacity).toBe('0');
     expect(second.style.opacity).toBe('1');
 
     act(() => {
-      vi.advanceTimersByTime(900);
+      vi.advanceTimersByTime(1800);
     });
     expect(first.style.opacity).toBe('1');
+  });
+
+  it('o botão pausa e retoma a animação', () => {
+    mockReducedMotion(false);
+    render(<ExerciseAnimation images={images} alt="Prancha" controls />);
+    const [first] = Array.from(document.querySelectorAll('img'));
+
+    fireEvent.click(screen.getByRole('button', { name: 'Pausar animação' }));
+    act(() => {
+      vi.advanceTimersByTime(5000);
+    });
+    expect(first.style.opacity).toBe('1');
+    expect(screen.getByText('Início')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Reproduzir animação' }));
+    act(() => {
+      vi.advanceTimersByTime(1800);
+    });
+    expect(first.style.opacity).toBe('0');
+    expect(screen.getByText('Fim')).toBeInTheDocument();
   });
 
   it('com "reduzir movimento" fica parada na primeira foto', () => {

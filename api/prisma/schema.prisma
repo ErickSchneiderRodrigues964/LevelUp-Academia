@@ -81,6 +81,8 @@ model Exercise {
   steps         String[]
   /// Caminhos das 2 fotos (posição inicial e final), alternadas como animação.
   images        String[]
+  /// Vídeo opcional (arquivo .mp4/.webm). Quando existe, substitui a animação das fotos.
+  videoUrl      String?
 
   items WorkoutItem[]
 
