@@ -26,6 +26,9 @@ model User {
 
   // Aulas que este usuário ministra (só faz sentido para instrutores)
   classes ClassTemplate[]
+
+  // Fichas de treino que este aluno montou
+  workouts Workout[]
 }
 
 model Plan {
@@ -61,4 +64,55 @@ model ClassTemplate {
   capacity        Int
 
   @@unique([modalityId, weekday, startTime])
+}
+
+/// Exercício do catálogo (textos em português; fotos em web/public/exercicios).
+model Exercise {
+  id            String   @id @default(uuid())
+  /// Identificador legível e estável, usado na URL e no nome da pasta de fotos.
+  slug          String   @unique
+  name          String
+  /// peito, costas, ombros, biceps, triceps, pernas, gluteos, abdomen
+  muscleGroup   String
+  equipment     String
+  level         String
+  primaryMuscle String
+  description   String
+  steps         String[]
+  /// Caminhos das 2 fotos (posição inicial e final), alternadas como animação.
+  images        String[]
+  /// Vídeo opcional (arquivo .mp4/.webm). Quando existe, substitui a animação das fotos.
+  videoUrl      String?
+
+  items WorkoutItem[]
+
+  @@index([muscleGroup])
+}
+
+/// Uma ficha montada pelo aluno (Treino A, Treino B...).
+model Workout {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  name      String
+  createdAt DateTime @default(now())
+
+  items WorkoutItem[]
+
+  @@index([userId])
+}
+
+/// Um exercício dentro de uma ficha, com séries e repetições.
+model WorkoutItem {
+  id         String   @id @default(uuid())
+  workout    Workout  @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  workoutId  String
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+  exerciseId String
+  /// Ordem dentro da ficha, começando em 0.
+  position   Int
+  sets       Int
+  reps       Int
+
+  @@index([workoutId])
 }

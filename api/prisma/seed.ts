@@ -9,6 +9,7 @@ import { randomUUID } from 'node:crypto';
 import { DEMO_EMAILS } from '../src/auth/auth.service.js';
 import { hashPassword } from '../src/auth/password.js';
 import { prisma } from '../src/db.js';
+import { seedExercises } from '../src/catalog/seed-exercises.js';
 
 const demoPassword = process.env.SEED_DEMO_PASSWORD;
 if (!demoPassword || demoPassword.length < 8) {
@@ -182,9 +183,11 @@ async function main() {
     });
   }
 
+  const exerciseCount = await seedExercises();
+
   console.log(
     `Seed concluído: ${plans.length} planos, ${modalities.length} modalidades, ` +
-      `${users.length} usuários, ${schedule.length} aulas na grade.`,
+      `${users.length} usuários, ${schedule.length} aulas na grade, ${exerciseCount} exercícios.`,
   );
 }
 

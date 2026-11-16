@@ -4,11 +4,13 @@ import { RequireRole } from './auth/RequireRole';
 import { PageTransition } from './components/PageTransition';
 import { WakingNotice } from './components/WakingNotice';
 import { AdminHome } from './pages/AdminHome';
+import { Exercises } from './pages/Exercises';
 import { Home } from './pages/Home';
 import { InstructorHome } from './pages/InstructorHome';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
 import { StudentHome } from './pages/StudentHome';
+import { Workouts } from './pages/Workouts';
 
 export function App() {
   return (
@@ -24,6 +26,22 @@ export function App() {
             element={
               <RequireRole roles={['STUDENT']}>
                 <StudentHome />
+              </RequireRole>
+            }
+          />
+          <Route
+            path="/aluno/exercicios"
+            element={
+              <RequireRole roles={['STUDENT']}>
+                <Exercises />
+              </RequireRole>
+            }
+          />
+          <Route
+            path="/aluno/fichas"
+            element={
+              <RequireRole roles={['STUDENT']}>
+                <Workouts />
               </RequireRole>
             }
           />

@@ -14,7 +14,9 @@ export function ScheduleGrid({ classes }: { classes: ScheduleClass[] }) {
   const days = DISPLAY_ORDER.filter((day) => day !== 0 || hasSunday);
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+    // auto-fit: o navegador decide quantas colunas cabem, cada uma com no mínimo 190px.
+    // Assim o conteúdo nunca estoura a coluna, em qualquer largura de tela.
+    <div className="grid grid-cols-[repeat(auto-fit,minmax(190px,1fr))] gap-4">
       {days.map((day) => {
         const dayClasses = classes
           .filter((c) => c.weekday === day)
@@ -26,7 +28,7 @@ export function ScheduleGrid({ classes }: { classes: ScheduleClass[] }) {
           <section
             key={day}
             aria-labelledby={headingId}
-            className="rounded-2xl border border-border p-4"
+            className="min-w-0 rounded-2xl border border-border p-4"
           >
             <h3
               id={headingId}
@@ -40,9 +42,9 @@ export function ScheduleGrid({ classes }: { classes: ScheduleClass[] }) {
             ) : (
               <ul className="flex flex-col gap-3">
                 {dayClasses.map((c) => (
-                  <li key={c.id} className="flex gap-3">
-                    <span className="w-12 shrink-0 font-bold text-primary">{c.startTime}</span>
-                    <span className="min-w-0">
+                  <li key={c.id} className="flex min-w-0 flex-col">
+                    <span className="font-bold text-primary">{c.startTime}</span>
+                    <span className="min-w-0 break-words">
                       <span className="block font-semibold">{c.modality.name}</span>
                       <span className="block text-xs text-muted">
                         {c.instructor.name} · {c.durationMinutes} min

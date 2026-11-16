@@ -34,3 +34,31 @@ export type ScheduleClass = {
   modality: { id: string; name: string };
   instructor: { id: string; name: string };
 };
+
+export type MuscleGroup = { id: string; label: string };
+
+export type Exercise = {
+  id: string;
+  slug: string;
+  name: string;
+  muscleGroup: string;
+  equipment: string;
+  level: string;
+  primaryMuscle: string;
+  description: string;
+  steps: string[];
+  /** Duas fotos: posição inicial e final. */
+  images: string[];
+  /** Vídeo opcional; se existir, é mostrado no lugar da animação das fotos. */
+  videoUrl: string | null;
+};
+
+export type WorkoutItem = {
+  id: string;
+  position: number;
+  sets: number;
+  reps: number;
+  exercise: Exercise;
+};
+
+export type Workout = { id: string; name: string; items: WorkoutItem[] };

@@ -5,6 +5,7 @@ import { authRoutes } from './auth/auth.routes.js';
 import { catalogRoutes } from './catalog/catalog.routes.js';
 import { env } from './env.js';
 import { errorHandler, notFoundHandler } from './errors.js';
+import { workoutRoutes } from './workouts/workouts.routes.js';
 
 /** Monta a aplicação sem abrir porta, para que os testes possam usá-la. */
 export function createApp(): Express {
@@ -20,6 +21,7 @@ export function createApp(): Express {
   app.use('/auth', authRoutes);
   app.use('/admin', adminRoutes);
   app.use(catalogRoutes);
+  app.use('/workouts', workoutRoutes);
 
   // Sempre por último: o que não casou com nenhuma rota vira 404,
   // e todo erro passa pelo mesmo formato de resposta.
