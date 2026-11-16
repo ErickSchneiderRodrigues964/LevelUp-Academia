@@ -60,7 +60,7 @@ async function parseError(response: Response): Promise<ApiError> {
   return new ApiError(response.status, 'UNKNOWN', 'Algo deu errado. Tente novamente em instantes.');
 }
 
-async function request<T>(method: 'GET' | 'POST', path: string, body?: unknown): Promise<T> {
+async function request<T>(method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE', path: string, body?: unknown): Promise<T> {
   const headers = new Headers();
   const token = tokenStore.get();
   if (token) headers.set('Authorization', `Bearer ${token}`);
@@ -98,6 +98,8 @@ async function request<T>(method: 'GET' | 'POST', path: string, body?: unknown):
       throw error;
     }
 
+    // 204 (por exemplo, ao apagar) vem sem corpo.
+    if (response.status === 204) return undefined as T;
     return (await response.json()) as T;
   } finally {
     clearTimeout(slowTimer);
@@ -111,4 +113,7 @@ async function request<T>(method: 'GET' | 'POST', path: string, body?: unknown):
 export const api = {
   get: <T>(path: string) => request<T>('GET', path),
   post: <T>(path: string, body: unknown) => request<T>('POST', path, body),
+  patch: <T>(path: string, body: unknown) => request<T>('PATCH', path, body),
+  put: <T>(path: string, body: unknown) => request<T>('PUT', path, body),
+  delete: (path: string) => request<void>('DELETE', path),
 };

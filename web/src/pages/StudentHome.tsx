@@ -3,7 +3,8 @@ import { useApi } from '../api/useApi';
 import { useAuth } from '../auth/AuthContext';
 import { AppHeader } from '../components/Header';
 import { ScheduleGrid } from '../components/ScheduleGrid';
-import { ErrorNotice } from '../components/ui';
+import { StudentNav } from '../components/StudentNav';
+import { ButtonLink, ErrorNotice } from '../components/ui';
 import { daysUntil, firstName, formatDate } from '../format';
 
 function planStatus(planExpiresAt: string | null): string {
@@ -38,6 +39,7 @@ export function StudentHome() {
   return (
     <div className="min-h-screen">
       <AppHeader />
+      <StudentNav />
       <main className="mx-auto flex max-w-5xl flex-col gap-6 px-5 py-10">
         <h1 className="font-display text-5xl uppercase leading-none">
           Olá, {firstName(user.name)}
@@ -59,10 +61,19 @@ export function StudentHome() {
             title="Próximas aulas"
             text="Aqui você vai reservar vaga nas aulas coletivas, entrar na lista de espera e cancelar."
           />
-          <ComingSoon
-            title="Treino de hoje"
-            text="Aqui vai aparecer a ficha montada pelo seu instrutor, para marcar séries e registrar cargas."
-          />
+          <section className="flex flex-col gap-3 rounded-[20px] bg-surface p-6">
+            <h2 className="text-lg font-semibold">Minhas fichas</h2>
+            <p className="text-sm leading-relaxed text-muted">
+              Monte seu próprio treino escolhendo exercícios por região do corpo, com fotos de
+              como fazer.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <ButtonLink to="/aluno/exercicios">Escolher exercícios</ButtonLink>
+              <ButtonLink to="/aluno/fichas" variant="outline">
+                Ver minhas fichas
+              </ButtonLink>
+            </div>
+          </section>
         </div>
 
         <section aria-labelledby="titulo-grade" className="flex flex-col gap-4">
